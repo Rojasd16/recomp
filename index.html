@@ -381,6 +381,129 @@ body::before{content:'';position:fixed;inset:0;opacity:0.06;pointer-events:none;
 // DB.prs{}       → {exName: {weight,reps,e1rm,date}}
 // DB.settings    → {unit:'lbs'}
 
+
+// ── PHASE SYSTEM ─────────────────────────────────────────────────────────
+// START_DATE: March 25, 2026
+// Phase 0: Weeks 1-4  — 3x Full Body, 2-3 sets, 50-60% effort, RIR 4-5
+// Phase 1: Weeks 5-8  — 4x Upper/Lower, 3 sets, supersets introduced, RIR 2-3
+// Phase 2: Week 9+    — Full 5-day program, max volume, RIR 1-2
+const START_DATE = new Date('2026-03-25');
+
+function getCurrentPhase() {
+  const now = new Date();
+  const msPerWeek = 7 * 24 * 60 * 60 * 1000;
+  const weeksElapsed = Math.floor((now - START_DATE) / msPerWeek);
+  if (weeksElapsed < 4) return 0;
+  if (weeksElapsed < 8) return 1;
+  return 2;
+}
+
+function getWeekNumber() {
+  const now = new Date();
+  const msPerWeek = 7 * 24 * 60 * 60 * 1000;
+  return Math.floor((now - START_DATE) / msPerWeek) + 1;
+}
+
+// ── PHASE 0: FULL BODY 3x/WEEK ───────────────────────────────────────────
+// Weeks 1-4. Mon/Wed/Fri. 2-3 sets. RIR 4-5. No supersets.
+// Purpose: Retrain movement patterns, condition tendons, prevent DOMS overload
+// Nordic curl removed — too high eccentric load for returning connective tissue
+// All compound movements kept simple — machines preferred where noted
+const PHASE0_PROGRAM = [
+  {id:'fb1',day:'MON',name:'Full Body A',focus:'Movement Relearning · Low Volume · RIR 4–5',exercises:[
+    {name:'Barbell Back Squat',target:'3 × 8–10',rest:120,sets:3,tempo:'3-1-2-0'},
+    {name:'Barbell Bench Press',target:'3 × 8–10',rest:120,sets:3,tempo:'3-1-2-0'},
+    {name:'Weighted Pull-Up',target:'3 × 5–8',rest:120,sets:3,tempo:'3-1-2-0'},
+    {name:'Romanian Deadlift',target:'3 × 10–12',rest:90,sets:3,tempo:'3-2-2-0'},
+    {name:'DB Shoulder Press (Seated)',target:'2 × 10–12',rest:90,sets:2,tempo:'3-1-2-0'},
+    {name:'Cable Face Pull (Rope)',target:'3 × 15–20',rest:60,sets:3,tempo:'2-1-2-1'},
+    {name:'Standing Calf Raise',target:'3 × 12–15',rest:60,sets:3,tempo:'2-3-1-0'},
+  ]},
+  {id:'rest0a',day:'TUE',name:'Rest',focus:'Walk · Stretch · Recover',exercises:[]},
+  {id:'fb2',day:'WED',name:'Full Body B',focus:'Movement Relearning · Low Volume · RIR 4–5',exercises:[
+    {name:'Romanian Deadlift',target:'3 × 8–10',rest:120,sets:3,tempo:'3-2-2-0'},
+    {name:'Barbell Hip Thrust',target:'3 × 10–12',rest:90,sets:3,tempo:'2-0-2-2'},
+    {name:'Chest-Supported DB Row',target:'3 × 10–12',rest:90,sets:3,tempo:'3-2-2-0'},
+    {name:'Incline DB Press (30°)',target:'3 × 10–12',rest:90,sets:3,tempo:'3-2-2-0'},
+    {name:'Lat Pulldown (Wide Grip)',target:'3 × 10–12',rest:90,sets:3,tempo:'3-1-2-0'},
+    {name:'Cable Lateral Raise',target:'2 × 15–20',rest:60,sets:2,tempo:'3-2-1-0'},
+    {name:'Seated Calf Raise',target:'3 × 12–15',rest:60,sets:3,tempo:'2-3-1-0'},
+  ]},
+  {id:'rest0b',day:'THU',name:'Rest',focus:'Walk · Stretch · Recover',exercises:[]},
+  {id:'fb3',day:'FRI',name:'Full Body C',focus:'Movement Relearning · Low Volume · RIR 4–5',exercises:[
+    {name:'Leg Press (Low Foot)',target:'3 × 10–12',rest:90,sets:3,tempo:'3-2-2-0'},
+    {name:'Bulgarian Split Squat',target:'2 × 10–12 ea',rest:90,sets:2,tempo:'3-1-2-0'},
+    {name:'Barbell Bent-Over Row',target:'3 × 8–10',rest:120,sets:3,tempo:'3-1-2-0'},
+    {name:'Cable Fly (Low-to-High)',target:'3 × 12–15',rest:60,sets:3,tempo:'3-2-1-1'},
+    {name:'Overhead Tricep Extension (Cable)',target:'2 × 12–15',rest:60,sets:2,tempo:'3-2-1-0'},
+    {name:'Incline DB Curl',target:'2 × 10–12',rest:60,sets:2,tempo:'3-2-1-1'},
+    {name:'Ab Wheel Rollout',target:'2 × 8–10',rest:60,sets:2,tempo:'3-0-2-0'},
+  ]},
+  {id:'rest0c',day:'SAT',name:'Active Recovery',focus:'Light walk · Mobility · Foam rolling',exercises:[]},
+  {id:'rest0d',day:'SUN',name:'Full Rest',focus:'Sleep · Nutrition · CNS Recovery',exercises:[]},
+];
+
+// ── PHASE 1: UPPER/LOWER 4x/WEEK ─────────────────────────────────────────
+// Weeks 5-8. Mon/Tue/Thu/Fri. 3 sets. RIR 2-3. Supersets introduced carefully.
+// Purpose: Increase frequency and volume progressively, introduce split training
+const PHASE1_PROGRAM = [
+  {id:'p1_upper_a',day:'MON',name:'Upper A — Pull Focus',focus:'Back · Biceps · Rear Delts',exercises:[
+    {name:'Weighted Pull-Up',target:'3 × 5–8',rest:120,sets:3,tempo:'3-1-2-0',supersetWith:'Barbell Bent-Over Row'},
+    {name:'Barbell Bent-Over Row',target:'3 × 8–10',rest:120,sets:3,tempo:'3-1-2-0',supersetWith:'Weighted Pull-Up'},
+    {name:'Chest-Supported DB Row',target:'4 × 10–12',rest:90,sets:4,tempo:'3-2-2-0'},
+    {name:'Cable Face Pull (Rope)',target:'3 × 15–20',rest:60,sets:3,tempo:'2-1-2-1'},
+    {name:'Incline DB Curl',target:'3 × 10–12',rest:60,sets:3,tempo:'3-2-1-1'},
+    {name:'Hammer Curl',target:'2 × 12–15',rest:60,sets:2,tempo:'3-1-1-0'},
+  ]},
+  {id:'p1_lower_a',day:'TUE',name:'Lower A — Quad Focus',focus:'Quads · Glutes · Calves',exercises:[
+    {name:'Barbell Back Squat',target:'3 × 6–8',rest:120,sets:3,tempo:'3-1-2-0'},
+    {name:'Bulgarian Split Squat',target:'3 × 10–12 ea',rest:90,sets:3,tempo:'3-1-2-0'},
+    {name:'Leg Press (Low Foot)',target:'3 × 10–12',rest:90,sets:3,tempo:'3-2-2-0'},
+    {name:'Leg Extension (Lengthened Partial)',target:'3 × 12–15',rest:60,sets:3,tempo:'3-2-1-0',supersetWith:'Seated Leg Curl'},
+    {name:'Seated Leg Curl',target:'3 × 12–15',rest:60,sets:3,tempo:'3-2-1-0',supersetWith:'Leg Extension (Lengthened Partial)'},
+    {name:'Standing Calf Raise',target:'4 × 12–15',rest:60,sets:4,tempo:'2-3-1-0'},
+  ]},
+  {id:'rest1a',day:'WED',name:'Rest',focus:'Walk · Stretch · Recover',exercises:[]},
+  {id:'p1_upper_b',day:'THU',name:'Upper B — Push Focus',focus:'Chest · Shoulders · Triceps',exercises:[
+    {name:'Barbell Bench Press',target:'3 × 6–8',rest:120,sets:3,tempo:'3-1-2-0',supersetWith:'Cable Face Pull (Rope)'},
+    {name:'Cable Face Pull (Rope)',target:'3 × 15–20',rest:60,sets:3,tempo:'2-1-2-1',supersetWith:'Barbell Bench Press'},
+    {name:'Incline DB Press (30°)',target:'3 × 10–12',rest:90,sets:3,tempo:'3-2-2-0'},
+    {name:'DB Shoulder Press (Seated)',target:'3 × 10–12',rest:90,sets:3,tempo:'3-1-2-0'},
+    {name:'Cable Lateral Raise',target:'4 × 15–20',rest:60,sets:4,tempo:'3-2-1-0'},
+    {name:'Pec Deck',target:'3 × 12–15',rest:60,sets:3,tempo:'3-2-1-1'},
+    {name:'Overhead Tricep Extension (Cable)',target:'3 × 12–15',rest:60,sets:3,tempo:'3-2-1-0'},
+  ]},
+  {id:'p1_lower_b',day:'FRI',name:'Lower B — Posterior Focus',focus:'Hamstrings · Glutes · Core',exercises:[
+    {name:'Romanian Deadlift',target:'3 × 8–10',rest:120,sets:3,tempo:'3-2-2-0'},
+    {name:'Barbell Hip Thrust',target:'3 × 10–12',rest:90,sets:3,tempo:'2-0-2-2'},
+    {name:'Seated Leg Curl',target:'3 × 12–15',rest:60,sets:3,tempo:'3-2-1-0'},
+    {name:'Cable Pull-Through',target:'3 × 15–20',rest:60,sets:3,tempo:'3-1-2-0'},
+    {name:'Ab Wheel Rollout',target:'3 × 10–12',rest:60,sets:3,tempo:'3-0-2-0'},
+    {name:'Seated Calf Raise',target:'4 × 12–15',rest:60,sets:4,tempo:'2-3-1-0'},
+  ]},
+  {id:'rest1b',day:'SAT',name:'Active Recovery',focus:'Light walk · Mobility · Foam rolling',exercises:[]},
+  {id:'rest1c',day:'SUN',name:'Full Rest',focus:'Sleep · Nutrition · CNS Recovery',exercises:[]},
+];
+
+function getActiveProgram() {
+  const phase = getCurrentPhase();
+  if (phase === 0) return PHASE0_PROGRAM;
+  if (phase === 1) return PHASE1_PROGRAM;
+  return PROGRAM;
+}
+
+function getPhaseName(phase) {
+  if (phase === 0) return 'PHASE 0 — REINTRODUCTION';
+  if (phase === 1) return 'PHASE 1 — FOUNDATION';
+  return 'PHASE 2 — FULL PROGRAM';
+}
+
+function getPhaseDesc(phase) {
+  if (phase === 0) return 'Weeks 1–4 · 3x Full Body · RIR 4–5 · Retrain movement patterns';
+  if (phase === 1) return 'Weeks 5–8 · 4x Upper/Lower · RIR 2–3 · Build volume';
+  return 'Week 9+ · 5x Split · RIR 1–2 · Maximum hypertrophy';
+}
+
 const PROGRAM=[
   // ── DAY 1: PULL ──────────────────────────────────────────────────────
   // Pull-up: highest lat MVC (Lehman 2004 JSCR)
@@ -568,11 +691,14 @@ function renderDash(){
   const DAYS=['SUNDAY','MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY'];
   const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const dayIdx=now.getDay();const h=now.getHours();
+  const phase=getCurrentPhase();
+  const weekNum=getWeekNumber();
+  const activeProgram=getActiveProgram();
   document.getElementById('dash-greeting').textContent=h<12?'GOOD MORNING':h<17?'GOOD AFTERNOON':'GOOD EVENING';
   document.getElementById('dash-dayname').textContent=DAYS[dayIdx];
   document.getElementById('dash-date').innerHTML=`${MONTHS[now.getMonth()]} ${now.getDate()}<br>${now.getFullYear()}`;
-  const progIdx=dayIdx===0?6:dayIdx-1;
-  const todayProg=PROGRAM[progIdx];
+  const progIdx=dayIdx===0?activeProgram.length-1:Math.min(dayIdx-1,activeProgram.length-1);
+  const todayProg=activeProgram[progIdx]||activeProgram[0];
   document.getElementById('dash-focus').textContent=todayProg.focus;
   const ww=getWeekWorkouts();
   document.getElementById('stat-workouts').textContent=ww.length;
@@ -581,13 +707,15 @@ function renderDash(){
   const lastBW=DB.bodyweight.length?DB.bodyweight[DB.bodyweight.length-1].weight:null;
   document.getElementById('stat-bw').textContent=lastBW||'—';
   const wl=getWeeksLogged();
-  document.getElementById('banners-area').innerHTML=wl>=6?`<div class="banner deload"><div class="banner-icon">⚡</div><div class="banner-text"><strong>DELOAD RECOMMENDED</strong>You've logged ${wl} weeks of training. Check the Schedule tab in Progress.</div></div>`:'';
+  let bannerHtml=`<div class="banner info"><div class="banner-icon">${phase===0?'🔰':phase===1?'⚡':'🏆'}</div><div class="banner-text"><strong>${getPhaseName(phase)}</strong>${getPhaseDesc(phase)} · Week ${weekNum}</div></div>`;
+  if(wl>=6&&phase===2)bannerHtml+=`<div class="banner deload"><div class="banner-icon">⚡</div><div class="banner-text"><strong>DELOAD RECOMMENDED</strong>You've logged ${wl} weeks. Check the Schedule tab.</div></div>`;
+  document.getElementById('banners-area').innerHTML=bannerHtml;
   const alreadyDone=ww.some(w=>w.workoutId===todayProg.id);
   document.getElementById('today-workout-card').innerHTML=todayProg.exercises.length===0
     ?`<div class="workout-card" style="opacity:0.5"><div class="workout-card-header"><div><div class="wc-day">${todayProg.day} //</div><div class="wc-name">${todayProg.name}</div><div class="wc-focus">${todayProg.focus}</div></div></div></div>`
     :`<div class="workout-card"><div class="workout-card-header"><div><div class="wc-day">${todayProg.day} // ${DAYS[dayIdx]}</div><div class="wc-name">${todayProg.name}</div><div class="wc-focus">${todayProg.exercises.length} exercises · ${todayProg.focus}</div></div>${alreadyDone?'<span style="color:var(--green);font-family:var(--mono);font-size:10px">✓ DONE</span>':`<button class="start-btn" onclick="startWorkout(${progIdx})">START</button>`}</div></div>`;
-  document.getElementById('week-cards').innerHTML=PROGRAM.filter(p=>p.exercises.length>0).map(p=>{
-    const pi=PROGRAM.indexOf(p);const done=ww.some(w=>w.workoutId===p.id);
+  document.getElementById('week-cards').innerHTML=activeProgram.filter(p=>p.exercises.length>0).map(p=>{
+    const pi=activeProgram.indexOf(p);const done=ww.some(w=>w.workoutId===p.id);
     return `<div class="workout-card"><div class="workout-card-header"><div><div class="wc-day">${p.day} ${done?'// ✓ DONE':'//'}</div><div class="wc-name">${p.name}</div></div>${!done?`<button class="start-btn" style="font-size:9px;padding:8px 12px" onclick="startWorkout(${pi})">GO</button>`:''}</div></div>`;
   }).join('');
 }
@@ -597,7 +725,7 @@ let restTimer=null,restTotal=90,restRemaining=0,restCallback=null;
 let selectedMood='';
 
 function startWorkout(progIdx){
-  const prog=PROGRAM[progIdx];if(!prog.exercises.length)return;
+  const prog=getActiveProgram()[progIdx];if(!prog||!prog.exercises.length)return;
   activeWorkout={
     id:uuid(),workoutId:prog.id,name:prog.name,date:new Date().toISOString(),
     progIdx,duration:0,mood:'',note:'',
