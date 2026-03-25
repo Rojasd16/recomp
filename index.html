@@ -382,74 +382,89 @@ body::before{content:'';position:fixed;inset:0;opacity:0.06;pointer-events:none;
 // DB.settings    → {unit:'lbs'}
 
 const PROGRAM=[
-  // DAY 1 — PULL (Horizontal + Vertical)
-  // Research: Pull-up = highest lat MVC (Lehman 2004); Chest-supported row removes spinal load for isolated lat/rhomboid work
-  // Face pull critical for posterior delt health — counterbalances pressing (Cools et al. 2016)
-  // Incline curl = lengthened bicep position per Maeo et al. 2022 stretch-mediated hypertrophy
+  // ── DAY 1: PULL ──────────────────────────────────────────────────────
+  // Pull-up: highest lat MVC (Lehman 2004 JSCR)
+  // Bent-over row AAS paired with pull-up: agonist-antagonist, no strength loss (Robbins 2010)
+  // Chest-supported row: removes spinal load, isolates rhomboid/mid-trap
+  // Face pull: rear delt + external rotation — mandatory counterbalance to pressing volume
+  // Rear delt fly: adds isolated rear delt volume to hit 12–16 set target
+  // Incline curl: bicep in lengthened position — stretch-mediated hypertrophy (Maeo 2022)
+  // Hammer curl: brachialis emphasis, forearm strength
   {id:'pull',day:'MON',name:'Upper — Pull',focus:'Lats · Rhomboids · Rear Delts · Biceps',exercises:[
     {name:'Weighted Pull-Up',target:'4 × 5–8',rest:120,sets:4,tempo:'3-1-2-0',supersetWith:'Barbell Bent-Over Row'},
     {name:'Barbell Bent-Over Row',target:'4 × 8–10',rest:120,sets:4,tempo:'3-1-2-0',supersetWith:'Weighted Pull-Up'},
     {name:'Chest-Supported DB Row',target:'3 × 10–12',rest:90,sets:3,tempo:'3-2-2-0'},
     {name:'Cable Face Pull (Rope)',target:'3 × 15–20',rest:60,sets:3,tempo:'2-1-2-1'},
+    {name:'Rear Delt Cable Fly',target:'3 × 15–20',rest:60,sets:3,tempo:'3-1-2-0'},
     {name:'Incline DB Curl',target:'3 × 10–12',rest:60,sets:3,tempo:'3-2-1-1'},
     {name:'Hammer Curl',target:'2 × 12–15',rest:60,sets:2,tempo:'3-1-1-0'},
   ]},
-  // DAY 2 — LOWER QUAD
-  // Research: Squat = highest quad + glute compound activation (Escamilla 2001)
-  // Bulgarian split squat = unilateral overload; corrects asymmetries (McCurdy et al. 2010)
-  // Leg extension at lengthened position (100-65° ROM) superior for regional quad hypertrophy (Pedrosa et al. 2022)
-  // Leg curl superset with leg extension = agonist-antagonist, no strength loss (Robbins et al. 2010)
-  // Standing calf raise at full stretch — gastrocnemius lengthened position superior (Maeo et al. 2022)
+  // ── DAY 2: LOWER QUAD ────────────────────────────────────────────────
+  // Squat: highest quad + glute compound activation (Escamilla 2001)
+  // Bulgarian split squat: unilateral overload, corrects asymmetries (McCurdy 2010)
+  // Leg press: added quad volume to reach 16–20 set target; high foot = glute bias, low foot = quad bias
+  // Hack squat: knee-dominant quad isolation without spinal compression of barbell squat
+  // Leg extension (lengthened partial): 100–65° ROM superior for regional quad hypertrophy (Pedrosa 2022)
+  // Seated leg curl AAS with leg extension: no fatigue interference (Robbins 2010)
+  // Standing calf raise: gastrocnemius at full stretch = superior hypertrophy (Maeo 2022)
   {id:'quad',day:'TUE',name:'Lower — Quad Dominant',focus:'Quads · Glutes · Adductors · Calves',exercises:[
     {name:'Barbell Back Squat',target:'4 × 5–8',rest:120,sets:4,tempo:'3-1-2-0'},
     {name:'Bulgarian Split Squat',target:'3 × 10–12 ea',rest:90,sets:3,tempo:'3-1-2-0'},
-    {name:'Leg Press (High Foot, Deep ROM)',target:'3 × 10–12',rest:90,sets:3,tempo:'3-2-2-0'},
+    {name:'Leg Press (Low Foot)',target:'3 × 10–12',rest:90,sets:3,tempo:'3-2-2-0'},
+    {name:'Hack Squat',target:'3 × 10–12',rest:90,sets:3,tempo:'3-2-2-0'},
     {name:'Leg Extension (Lengthened Partial)',target:'3 × 12–15',rest:60,sets:3,tempo:'3-2-1-0',supersetWith:'Seated Leg Curl'},
     {name:'Seated Leg Curl',target:'3 × 12–15',rest:60,sets:3,tempo:'3-2-1-0',supersetWith:'Leg Extension (Lengthened Partial)'},
     {name:'Standing Calf Raise',target:'4 × 12–15',rest:60,sets:4,tempo:'2-3-1-0'},
   ]},
-  // DAY 3 — PUSH
-  // Research: Bench press = highest pec MVC (Lehman 2005 meta)
-  // Incline DB at 30° = optimal upper pec activation without shoulder impingement (Glass & Armstrong 1997)
-  // Cable fly = peak contraction + stretch — complements press mechanical profile
-  // DB OHP over barbell = greater deltoid ROM, superior anterior delt activation (Saeterbakken 2013)
-  // Overhead tricep extension = long head of tricep fully stretched — Maeo et al. 2022: substantially greater tricep hypertrophy in overhead vs neutral position
-  // Cable lateral raise = constant tension through full ROM vs dumbbell drop-off
+  // ── DAY 3: PUSH ──────────────────────────────────────────────────────
+  // Bench press AAS with face pull: every horizontal press paired with rear delt work (Cools 2016)
+  // Incline DB at 30°: optimal upper pec activation without impingement (Glass & Armstrong 1997)
+  // Cable fly: peak contraction + stretch — complements press mechanical profile
+  // Pec deck: highest pec isolation EMG, removes tricep from equation (Contreras EMG series)
+  // DB OHP: greater deltoid ROM vs barbell (Saeterbakken 2013)
+  // Cable lateral raise: constant tension through ROM vs DB drop-off
+  // Overhead tricep ext: long head fully stretched — substantially greater hypertrophy vs neutral (Maeo 2022)
   {id:'push',day:'WED',name:'Upper — Push',focus:'Chest · Anterior Delts · Lateral Delts · Triceps',exercises:[
     {name:'Barbell Bench Press',target:'4 × 5–8',rest:120,sets:4,tempo:'3-1-2-0',supersetWith:'Cable Face Pull (Rope)'},
     {name:'Cable Face Pull (Rope)',target:'4 × 15–20',rest:60,sets:4,tempo:'2-1-2-1',supersetWith:'Barbell Bench Press'},
     {name:'Incline DB Press (30°)',target:'3 × 10–12',rest:90,sets:3,tempo:'3-2-2-0'},
     {name:'Cable Fly (Low-to-High)',target:'3 × 12–15',rest:60,sets:3,tempo:'3-2-1-1'},
+    {name:'Pec Deck',target:'3 × 12–15',rest:60,sets:3,tempo:'3-2-1-1'},
     {name:'DB Shoulder Press (Seated)',target:'3 × 10–12',rest:90,sets:3,tempo:'3-1-2-0'},
     {name:'Cable Lateral Raise',target:'3 × 15–20',rest:60,sets:3,tempo:'3-2-1-0'},
     {name:'Overhead Tricep Extension (Cable)',target:'3 × 12–15',rest:60,sets:3,tempo:'3-2-1-0'},
   ]},
-  // DAY 4 — LOWER POSTERIOR
-  // Research: RDL = greatest hamstring stretch-mediated hypertrophy (Maeo et al. 2020: greater hamstring hypertrophy at long vs short muscle lengths)
-  // Hip thrust = highest glute MVC vs squat and deadlift (Delgado et al. 2019; Frontiers GMax meta-analysis 2025)
-  // Nordic curl = eccentric hamstring overload; reduces injury risk (Petersen et al. 2011 AJSM)
-  // Ab wheel rollout = superior core activation vs crunch; trains anti-extension under load (Escamilla et al. 2010)
-  // Seated calf raise = soleus dominant (different fiber type from gastrocnemius) — full spectrum calf development
+  // ── DAY 4: LOWER POSTERIOR ───────────────────────────────────────────
+  // RDL: greatest hamstring hypertrophy at long muscle lengths (Maeo 2020 Med Sci Sports)
+  // Hip thrust: highest glute MVC vs squat and deadlift (Delgado 2019; Frontiers GMax meta 2025)
+  // Nordic hamstring curl: eccentric overload, injury prevention (Petersen 2011 AJSM)
+  // Cable pull-through: glute hinge with less spinal load than deadlift
+  // Ab wheel rollout: superior anti-extension core activation vs crunch (Escamilla 2010)
+  // Pallof press: anti-rotation core stability — trains obliques under lateral load
+  // Seated calf raise: soleus dominant (slow-twitch fiber type) — completes gastrocnemius from Day 2
   {id:'post',day:'THU',name:'Lower — Posterior Chain',focus:'Hamstrings · Glutes · Erectors · Core',exercises:[
     {name:'Romanian Deadlift',target:'4 × 8–10',rest:120,sets:4,tempo:'3-2-2-0'},
     {name:'Barbell Hip Thrust',target:'4 × 10–12',rest:90,sets:4,tempo:'2-0-2-2'},
     {name:'Nordic Hamstring Curl',target:'3 × 6–8',rest:90,sets:3,tempo:'4-0-X-0'},
     {name:'Cable Pull-Through',target:'3 × 15–20',rest:60,sets:3,tempo:'3-1-2-0'},
     {name:'Ab Wheel Rollout',target:'3 × 10–12',rest:60,sets:3,tempo:'3-0-2-0'},
+    {name:'Pallof Press',target:'3 × 12–15 ea',rest:60,sets:3,tempo:'2-1-2-1'},
     {name:'Seated Calf Raise',target:'4 × 12–15',rest:60,sets:4,tempo:'2-3-1-0'},
   ]},
-  // DAY 5 — UPPER STRENGTH + WEAK POINT
-  // Research: Deadlift = greatest overall posterior chain recruitment (Escamilla 2001)
-  // Standing OHP = highest deltoid MVC of any shoulder exercise (Saeterbakken 2013)
-  // Chest-supported row = horizontal pull balances vertical pressing; rhomboid/mid-trap emphasis
-  // Lat pulldown = machine-based lat work complements pull-up; allows controlled overload
-  // Concentration curl = ACE research: highest bicep brachii MVC of any curl variation
-  // Tricep dip = 85-90% tricep MVC; weighted adds progressive overload
-  {id:'upper',day:'FRI',name:'Upper — Strength Focus',focus:'Compounds · Strength Bias · Weak Point',exercises:[
+  // ── DAY 5: UPPER STRENGTH ────────────────────────────────────────────
+  // Deadlift: greatest posterior chain + overall body recruitment (Escamilla 2001)
+  // Standing OHP: highest deltoid MVC of any shoulder exercise (Saeterbakken 2013)
+  // T-Bar row: horizontal pull strength day — heavy rhomboid/mid-trap overload
+  // Lat pulldown: machine vertical pull, complements pull-up, controlled overload for lat width
+  // Incline DB press: adds chest volume (chest is underhit at 13 sets — needs to reach 16+)
+  // Weighted tricep dip: 85–90% tricep MVC (ACE EMG research); chest-forward lean adds pec
+  // Concentration curl: highest bicep brachii MVC of any curl variation (ACE 2014)
+  {id:'upper',day:'FRI',name:'Upper — Strength Focus',focus:'Compounds · Strength Bias · Chest + Back',exercises:[
     {name:'Conventional Deadlift',target:'4 × 4–6',rest:150,sets:4,tempo:'3-0-X-0'},
     {name:'Standing Barbell OHP',target:'4 × 6–8',rest:120,sets:4,tempo:'3-1-2-0'},
     {name:'Chest-Supported T-Bar Row',target:'4 × 6–8',rest:120,sets:4,tempo:'3-1-2-0'},
     {name:'Lat Pulldown (Wide Grip)',target:'3 × 10–12',rest:90,sets:3,tempo:'3-1-2-0'},
+    {name:'Incline DB Press (30°)',target:'3 × 8–10',rest:90,sets:3,tempo:'3-1-2-0'},
     {name:'Weighted Tricep Dip',target:'3 × 8–10',rest:90,sets:3,tempo:'3-1-2-0'},
     {name:'Concentration Curl',target:'3 × 10–12',rest:60,sets:3,tempo:'3-2-1-1'},
   ]},
@@ -461,29 +476,31 @@ const VOLUME_TARGETS={'Chest':20,'Back':22,'Quads':18,'Hamstrings':16,'Glutes':1
 const EX_MUSCLES={
   // Pull day
   'Weighted Pull-Up':'Back','Barbell Bent-Over Row':'Back',
-  'Chest-Supported DB Row':'Back','Cable Face Pull (Rope)':'Shoulders',
+  'Chest-Supported DB Row':'Back','Cable Face Pull (Rope)':'Rear Delts',
+  'Rear Delt Cable Fly':'Rear Delts',
   'Incline DB Curl':'Biceps','Hammer Curl':'Biceps',
   // Quad day
   'Barbell Back Squat':'Quads','Bulgarian Split Squat':'Quads',
-  'Leg Press (High Foot, Deep ROM)':'Quads',
+  'Leg Press (Low Foot)':'Quads','Hack Squat':'Quads',
   'Leg Extension (Lengthened Partial)':'Quads','Seated Leg Curl':'Hamstrings',
   'Standing Calf Raise':'Calves',
   // Push day
   'Barbell Bench Press':'Chest','Incline DB Press (30°)':'Chest',
-  'Cable Fly (Low-to-High)':'Chest','DB Shoulder Press (Seated)':'Shoulders',
+  'Cable Fly (Low-to-High)':'Chest','Pec Deck':'Chest',
+  'DB Shoulder Press (Seated)':'Shoulders',
   'Cable Lateral Raise':'Shoulders','Overhead Tricep Extension (Cable)':'Triceps',
   // Posterior day
   'Romanian Deadlift':'Hamstrings','Barbell Hip Thrust':'Glutes',
   'Nordic Hamstring Curl':'Hamstrings','Cable Pull-Through':'Glutes',
-  'Ab Wheel Rollout':'Core','Seated Calf Raise':'Calves',
+  'Ab Wheel Rollout':'Core','Pallof Press':'Core','Seated Calf Raise':'Calves',
   // Upper strength day
   'Conventional Deadlift':'Back','Standing Barbell OHP':'Shoulders',
   'Chest-Supported T-Bar Row':'Back','Lat Pulldown (Wide Grip)':'Back',
   'Weighted Tricep Dip':'Triceps','Concentration Curl':'Biceps',
   // Legacy entries for history compatibility
   'Incline DB Prone Row':'Back','Lying Leg Curl (Lengthened)':'Hamstrings',
-  'Weighted Plank':'Core','Hack Squat':'Quads','Pendlay Row':'Back',
-  'Pec Deck':'Chest','Weighted Dip':'Triceps','Weighted Dip (Chest Lean)':'Chest',
+  'Weighted Plank':'Core','Leg Press (High Foot, Deep ROM)':'Quads',
+  'Pendlay Row':'Back','Weighted Dip':'Triceps','Weighted Dip (Chest Lean)':'Chest',
 };
 
 let DB={version:2,workouts:[],bodyweight:[],prs:{},settings:{unit:'lbs'},customProgram:null};
