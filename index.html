@@ -518,7 +518,7 @@ function startWorkout(progIdx){
     exercises:prog.exercises.map(ex=>{
       const last=getLastSessionForExercise(ex.name);
       const sw=last?last[0].weight:'';
-      return{name:ex.name,target:ex.target,rest:ex.rest,supersetWith:ex.supersetWith||null,
+      return{name:ex.name,target:ex.target,rest:ex.rest,tempo:ex.tempo||null,supersetWith:ex.supersetWith||null,
         sets:Array.from({length:ex.sets},()=>({weight:sw,reps:'',rir:'2',warmup:false,done:false,prefilled:!!sw}))};
     })
   };
