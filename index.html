@@ -275,7 +275,8 @@ body::before{content:'';position:fixed;inset:0;opacity:0.06;pointer-events:none;
       <div id="ex-guide-panel" style="display:none;background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--accent2);padding:10px 14px;margin-bottom:14px;">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
           <div>
-            <div style="font-family:var(--mono);font-size:8px;color:var(--accent2);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">WARMUP PROTOCOL</div>
+            <div style="font-family:var(--mono);font-size:8px;color:var(--accent2);letter-spacing:2px;text-transform:uppercase;margin-bottom:2px;">WARMUP PROTOCOL</div>
+            <div style="font-family:var(--mono);font-size:7px;color:var(--muted);margin-bottom:4px;letter-spacing:1px;">% of today's working weight</div>
             <div id="guide-wu-sets" style="font-family:var(--display);font-size:20px;letter-spacing:1px;color:var(--text);font-weight:700;"></div>
             <div id="guide-wu-note" style="font-family:var(--mono);font-size:8px;color:var(--muted);margin-top:4px;line-height:1.7;"></div>
           </div>
@@ -435,31 +436,31 @@ function getWeekNumber() {
 
 const EXERCISE_GUIDE = {
   // ── HEAVY BARBELL COMPOUNDS ──
-  'Conventional Deadlift':     {wu:4, wuNote:'50%×5 · 65%×3 · 80%×2 · 90%×1', rir:'2–3', rirNote:'Extra margin — axial spinal load'},
-  'Barbell Back Squat':        {wu:4, wuNote:'50%×8 · 65%×5 · 80%×3 · 90%×1', rir:'2–3', rirNote:'Extra margin — axial load + knee stress'},
-  'Barbell Bench Press':       {wu:3, wuNote:'50%×8 · 70%×5 · 85%×2', rir:'1–2', rirNote:'Use spotter for final sets'},
-  'Standing Barbell OHP':      {wu:3, wuNote:'50%×8 · 70%×5 · 85%×2', rir:'2–3', rirNote:'Extra margin — overhead stability'},
-  'Barbell Bent-Over Row':     {wu:3, wuNote:'50%×8 · 70%×5 · 85%×2', rir:'1–2', rirNote:'Standard compound'},
-  'Romanian Deadlift':         {wu:3, wuNote:'50%×8 · 70%×5 · 85%×2', rir:'1–2', rirNote:'Pause 2s at bottom stretch'},
-  'Barbell Hip Thrust':        {wu:3, wuNote:'50%×10 · 65%×6 · 80%×3', rir:'1–2', rirNote:'2s squeeze at top each rep — glute activation critical'},
+  'Conventional Deadlift':     {wu:4, wuNote:'50%×5 · 65%×3 · 80%×2 · 90%×1  (of work weight)', rir:'2–3', rirNote:'Extra margin — axial spinal load'},
+  'Barbell Back Squat':        {wu:4, wuNote:'50%×8 · 65%×5 · 80%×3 · 90%×1  (of work weight)', rir:'2–3', rirNote:'Extra margin — axial load + knee stress'},
+  'Barbell Bench Press':       {wu:3, wuNote:'50%×8 · 70%×5 · 85%×2  (of work weight)', rir:'1–2', rirNote:'Use spotter for final sets'},
+  'Standing Barbell OHP':      {wu:3, wuNote:'50%×8 · 70%×5 · 85%×2  (of work weight)', rir:'2–3', rirNote:'Extra margin — overhead stability'},
+  'Barbell Bent-Over Row':     {wu:3, wuNote:'50%×8 · 70%×5 · 85%×2  (of work weight)', rir:'1–2', rirNote:'Standard compound'},
+  'Romanian Deadlift':         {wu:3, wuNote:'50%×8 · 70%×5 · 85%×2  (of work weight)', rir:'1–2', rirNote:'Pause 2s at bottom stretch'},
+  'Barbell Hip Thrust':        {wu:3, wuNote:'50%×10 · 65%×6 · 80%×3  (of work weight)', rir:'1–2', rirNote:'2s squeeze at top each rep — glute activation critical'},
 
   // ── BODYWEIGHT / LOADED COMPOUNDS ──
-  'Weighted Pull-Up':          {wu:2, wuNote:'BW×5 dead hang · BW×3 controlled', rir:'1–2', rirNote:'Full dead hang each rep'},
-  'Weighted Tricep Dip':       {wu:2, wuNote:'BW×5 · BW+25%×3', rir:'1–2', rirNote:'Control the descent'},
+  'Weighted Pull-Up':          {wu:2, wuNote:'BW×5 dead hang · BW×3 controlled  (add load after if weighted)', rir:'1–2', rirNote:'Full dead hang each rep'},
+  'Weighted Tricep Dip':       {wu:2, wuNote:'BW×5 · BW+25% of added weight ×3', rir:'1–2', rirNote:'Control the descent'},
   'Nordic Hamstring Curl':     {wu:2, wuNote:'Eccentric only ×3 slow · partial ×3', rir:'3–4', rirNote:'HIGH injury risk — always leave margin'},
-  'Bulgarian Split Squat':     {wu:2, wuNote:'BW×6 ea · 50% load ×4 ea', rir:'2–3', rirNote:'First sets = balance calibration'},
+  'Bulgarian Split Squat':     {wu:2, wuNote:'BW×6 ea · 50%×4 ea  (of work weight)', rir:'2–3', rirNote:'First sets = balance calibration'},
   'Ab Wheel Rollout':          {wu:1, wuNote:'Partial ROM ×5 — build to full extension', rir:'2–3', rirNote:'Full extension = high lumbar demand'},
   'Pallof Press':              {wu:1, wuNote:'Light cable ×8 each side', rir:'2–3', rirNote:'Anti-rotation — controlled tempo'},
 
   // ── MACHINE / CABLE COMPOUNDS ──
-  'Hack Squat':                {wu:2, wuNote:'50%×8 · 75%×4', rir:'1–2', rirNote:'Full depth — pause at bottom'},
-  'Leg Press (Low Foot)':      {wu:2, wuNote:'50%×10 · 75%×5', rir:'1–2', rirNote:'Never lock knees at top'},
-  'Leg Press (High Foot, Deep ROM)': {wu:2, wuNote:'50%×10 · 75%×5', rir:'1–2', rirNote:'High foot = glute bias'},
-  'Chest-Supported DB Row':    {wu:2, wuNote:'50%×8 · 75%×4', rir:'1–2', rirNote:'Full scapular retraction'},
-  'Chest-Supported T-Bar Row': {wu:2, wuNote:'50%×8 · 75%×4', rir:'1–2', rirNote:'Drive elbows back, not hands'},
-  'Lat Pulldown (Wide Grip)':  {wu:2, wuNote:'50%×8 · 75%×4', rir:'1–2', rirNote:'Full dead hang at top each rep'},
-  'Incline DB Press (30°)':    {wu:2, wuNote:'50%×8 · 75%×4', rir:'1–2', rirNote:'Slight arch, retract scapulae'},
-  'DB Shoulder Press (Seated)':{wu:2, wuNote:'50%×8 · 75%×4', rir:'1–2', rirNote:'Do not lock out at top'},
+  'Hack Squat':                {wu:2, wuNote:'50%×8 · 75%×4  (of work weight)', rir:'1–2', rirNote:'Full depth — pause at bottom'},
+  'Leg Press (Low Foot)':      {wu:2, wuNote:'50%×10 · 75%×5  (of work weight)', rir:'1–2', rirNote:'Never lock knees at top'},
+  'Leg Press (High Foot, Deep ROM)': {wu:2, wuNote:'50%×10 · 75%×5  (of work weight)', rir:'1–2', rirNote:'High foot = glute bias'},
+  'Chest-Supported DB Row':    {wu:2, wuNote:'50%×8 · 75%×4  (of work weight)', rir:'1–2', rirNote:'Full scapular retraction'},
+  'Chest-Supported T-Bar Row': {wu:2, wuNote:'50%×8 · 75%×4  (of work weight)', rir:'1–2', rirNote:'Drive elbows back, not hands'},
+  'Lat Pulldown (Wide Grip)':  {wu:2, wuNote:'50%×8 · 75%×4  (of work weight)', rir:'1–2', rirNote:'Full dead hang at top each rep'},
+  'Incline DB Press (30°)':    {wu:2, wuNote:'50%×8 · 75%×4  (of work weight)', rir:'1–2', rirNote:'Slight arch, retract scapulae'},
+  'DB Shoulder Press (Seated)':{wu:2, wuNote:'50%×8 · 75%×4  (of work weight)', rir:'1–2', rirNote:'Do not lock out at top'},
 
   // ── ISOLATION / CABLE ──
   'Cable Fly (Low-to-High)':   {wu:1, wuNote:'Light ×10 — feel the pec stretch', rir:'0–1', rirNote:'Isolation — can push to near failure'},
