@@ -271,6 +271,22 @@ body::before{content:'';position:fixed;inset:0;opacity:0.06;pointer-events:none;
         <div id="ex-tempo" style="display:none;font-family:var(--mono);font-size:9px;color:var(--orange);margin-top:4px;letter-spacing:1px;"></div>
         <div class="ex-badges" id="ex-badges"></div>
       </div>
+
+      <div id="ex-guide-panel" style="display:none;background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--accent2);padding:10px 14px;margin-bottom:14px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div>
+            <div style="font-family:var(--mono);font-size:8px;color:var(--accent2);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">WARMUP PROTOCOL</div>
+            <div id="guide-wu-sets" style="font-family:var(--display);font-size:20px;letter-spacing:1px;color:var(--text);font-weight:700;"></div>
+            <div id="guide-wu-note" style="font-family:var(--mono);font-size:8px;color:var(--muted);margin-top:4px;line-height:1.7;"></div>
+          </div>
+          <div>
+            <div style="font-family:var(--mono);font-size:8px;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">TARGET RIR</div>
+            <div id="guide-rir-target" style="font-family:var(--display);font-size:20px;letter-spacing:1px;color:var(--text);font-weight:700;"></div>
+            <div id="guide-rir-note" style="font-family:var(--mono);font-size:8px;color:var(--muted);margin-top:4px;line-height:1.7;"></div>
+          </div>
+        </div>
+      </div>
+
       <div class="set-header"><span>SET</span><span style="text-align:center">LBS</span><span style="text-align:center">REPS</span><span style="text-align:center">RIR</span><span></span></div>
       <div id="sets-container"></div>
       <div class="add-set-row">
@@ -404,6 +420,83 @@ function getWeekNumber() {
   return Math.floor((now - START_DATE) / msPerWeek) + 1;
 }
 
+
+// ── WARMUP & RIR LOOKUP TABLE ─────────────────────────────────────────────
+// Research basis:
+// Warmup sets: NSCA guidelines — heavy compounds 3-4 ramp sets (50→90% 1RM)
+//              moderate compounds 2-3 sets, isolation/cable 1 set
+// RIR targets: Schoenfeld 2016 — proximity to failure drives hypertrophy
+//              Heavy compounds: RIR 2-3 (safety margin, spinal/axial load)
+//              Moderate compounds: RIR 1-2 (standard working sets)
+//              Isolation/cable: RIR 0-1 (low injury risk, push closer to failure)
+//              Nordic curl: RIR 3-4 always (high eccentric injury risk)
+// Phase 0 override: add +2 RIR to all targets (reintroduction)
+// Phase 1 override: add +1 RIR to all targets (foundation)
+
+const EXERCISE_GUIDE = {
+  // ── HEAVY BARBELL COMPOUNDS ──
+  'Conventional Deadlift':     {wu:4, wuNote:'50%×5 · 65%×3 · 80%×2 · 90%×1', rir:'2–3', rirNote:'Extra margin — axial spinal load'},
+  'Barbell Back Squat':        {wu:4, wuNote:'50%×8 · 65%×5 · 80%×3 · 90%×1', rir:'2–3', rirNote:'Extra margin — axial load + knee stress'},
+  'Barbell Bench Press':       {wu:3, wuNote:'50%×8 · 70%×5 · 85%×2', rir:'1–2', rirNote:'Use spotter for final sets'},
+  'Standing Barbell OHP':      {wu:3, wuNote:'50%×8 · 70%×5 · 85%×2', rir:'2–3', rirNote:'Extra margin — overhead stability'},
+  'Barbell Bent-Over Row':     {wu:3, wuNote:'50%×8 · 70%×5 · 85%×2', rir:'1–2', rirNote:'Standard compound'},
+  'Romanian Deadlift':         {wu:3, wuNote:'50%×8 · 70%×5 · 85%×2', rir:'1–2', rirNote:'Pause 2s at bottom stretch'},
+  'Barbell Hip Thrust':        {wu:3, wuNote:'50%×10 · 65%×6 · 80%×3', rir:'1–2', rirNote:'2s squeeze at top each rep — glute activation critical'},
+
+  // ── BODYWEIGHT / LOADED COMPOUNDS ──
+  'Weighted Pull-Up':          {wu:2, wuNote:'BW×5 dead hang · BW×3 controlled', rir:'1–2', rirNote:'Full dead hang each rep'},
+  'Weighted Tricep Dip':       {wu:2, wuNote:'BW×5 · BW+25%×3', rir:'1–2', rirNote:'Control the descent'},
+  'Nordic Hamstring Curl':     {wu:2, wuNote:'Eccentric only ×3 slow · partial ×3', rir:'3–4', rirNote:'HIGH injury risk — always leave margin'},
+  'Bulgarian Split Squat':     {wu:2, wuNote:'BW×6 ea · 50% load ×4 ea', rir:'2–3', rirNote:'First sets = balance calibration'},
+  'Ab Wheel Rollout':          {wu:1, wuNote:'Partial ROM ×5 — build to full extension', rir:'2–3', rirNote:'Full extension = high lumbar demand'},
+  'Pallof Press':              {wu:1, wuNote:'Light cable ×8 each side', rir:'2–3', rirNote:'Anti-rotation — controlled tempo'},
+
+  // ── MACHINE / CABLE COMPOUNDS ──
+  'Hack Squat':                {wu:2, wuNote:'50%×8 · 75%×4', rir:'1–2', rirNote:'Full depth — pause at bottom'},
+  'Leg Press (Low Foot)':      {wu:2, wuNote:'50%×10 · 75%×5', rir:'1–2', rirNote:'Never lock knees at top'},
+  'Leg Press (High Foot, Deep ROM)': {wu:2, wuNote:'50%×10 · 75%×5', rir:'1–2', rirNote:'High foot = glute bias'},
+  'Chest-Supported DB Row':    {wu:2, wuNote:'50%×8 · 75%×4', rir:'1–2', rirNote:'Full scapular retraction'},
+  'Chest-Supported T-Bar Row': {wu:2, wuNote:'50%×8 · 75%×4', rir:'1–2', rirNote:'Drive elbows back, not hands'},
+  'Lat Pulldown (Wide Grip)':  {wu:2, wuNote:'50%×8 · 75%×4', rir:'1–2', rirNote:'Full dead hang at top each rep'},
+  'Incline DB Press (30°)':    {wu:2, wuNote:'50%×8 · 75%×4', rir:'1–2', rirNote:'Slight arch, retract scapulae'},
+  'DB Shoulder Press (Seated)':{wu:2, wuNote:'50%×8 · 75%×4', rir:'1–2', rirNote:'Do not lock out at top'},
+
+  // ── ISOLATION / CABLE ──
+  'Cable Fly (Low-to-High)':   {wu:1, wuNote:'Light ×10 — feel the pec stretch', rir:'0–1', rirNote:'Isolation — can push to near failure'},
+  'Pec Deck':                  {wu:1, wuNote:'Light ×10 — feel the stretch', rir:'0–1', rirNote:'Removes triceps — pure pec stimulus'},
+  'Cable Lateral Raise':       {wu:1, wuNote:'Light ×12 — establish arc groove', rir:'0–1', rirNote:'Slight forward lean, control descent'},
+  'Rear Delt Cable Fly':       {wu:1, wuNote:'Light ×12 — retract and squeeze', rir:'0–1', rirNote:'Light load, high control required'},
+  'Cable Face Pull (Rope)':    {wu:1, wuNote:'Light ×12 — external rotation emphasis', rir:'1–2', rirNote:'Thumbs to ears, elbows high'},
+  'Cable Pull-Through':        {wu:1, wuNote:'Light ×10 — hip hinge groove', rir:'1–2', rirNote:'Drive hips forward — not arms'},
+  'Overhead Tricep Extension (Cable)':{wu:1, wuNote:'Light ×10 — feel long head stretch', rir:'0–1', rirNote:'Overhead = max tricep long head stretch'},
+  'Leg Extension (Lengthened Partial)':{wu:1, wuNote:'Light ×10 full ROM — then partial work sets', rir:'0–1', rirNote:'Focus on bottom 60% ROM — peak stretch'},
+  'Seated Leg Curl':           {wu:1, wuNote:'Light ×10 — full stretch at top', rir:'0–1', rirNote:'Slow eccentric — 3s lowering'},
+  'Standing Calf Raise':       {wu:1, wuNote:'BW×15 — full ROM stretch', rir:'0–1', rirNote:'Pause 3s at bottom — stretch mediated'},
+  'Seated Calf Raise':         {wu:1, wuNote:'Light ×15 — full ROM stretch', rir:'0–1', rirNote:'Soleus fiber type — pause at bottom'},
+  'Incline DB Curl':           {wu:1, wuNote:'Light ×10 — feel bicep stretch at bottom', rir:'0–1', rirNote:'Lengthened position = key stimulus'},
+  'Hammer Curl':               {wu:1, wuNote:'Light ×10 — neutral grip groove', rir:'1–2', rirNote:'Brachialis — heavier than regular curl'},
+  'Concentration Curl':        {wu:1, wuNote:'Light ×10 — arm fixed against leg', rir:'0–1', rirNote:'Highest bicep MVC — push close to failure'},
+  'Hanging Leg Raise':         {wu:1, wuNote:'Knee raises ×8 — then straight leg', rir:'1–2', rirNote:'Control the descent — no swinging'},
+};
+
+// Get exercise guidance — returns warmup and RIR info for display
+// Applies phase-appropriate RIR adjustment
+function getExerciseGuide(exName) {
+  const guide = EXERCISE_GUIDE[exName];
+  if (!guide) return null;
+  const phase = getCurrentPhase();
+  // Clone to avoid mutating the lookup table
+  const adjusted = {...guide};
+  // Parse RIR range and add phase offset
+  if (phase < 2) {
+    const offset = phase === 0 ? 2 : 1;
+    const parts = guide.rir.split('–').map(Number);
+    adjusted.rir = `${parts[0]+offset}–${parts[parts.length-1]+offset}`;
+    adjusted.rirNote = guide.rirNote + (phase===0 ? ' · Phase 0: conservative' : ' · Phase 1: building');
+  }
+  return adjusted;
+}
+
 // ── PHASE 0: FULL BODY 3x/WEEK ───────────────────────────────────────────
 // Weeks 1-4. Mon/Wed/Fri. 2-3 sets. RIR 4-5. No supersets.
 // Purpose: Retrain movement patterns, condition tendons, prevent DOMS overload
@@ -414,7 +507,7 @@ const PHASE0_PROGRAM = [
     {name:'Barbell Back Squat',target:'3 × 8–10',rest:120,sets:3,tempo:'3-1-2-0'},
     {name:'Barbell Bench Press',target:'3 × 8–10',rest:120,sets:3,tempo:'3-1-2-0'},
     {name:'Weighted Pull-Up',target:'3 × 5–8',rest:120,sets:3,tempo:'3-1-2-0'},
-    {name:'Romanian Deadlift',target:'3 × 10–12',rest:90,sets:3,tempo:'3-2-2-0'},
+    {name:'Romanian Deadlift',target:'3 × 10–12',rest:120,sets:3,tempo:'3-2-2-0'},
     {name:'DB Shoulder Press (Seated)',target:'2 × 10–12',rest:90,sets:2,tempo:'3-1-2-0'},
     {name:'Cable Face Pull (Rope)',target:'3 × 15–20',rest:60,sets:3,tempo:'2-1-2-1'},
     {name:'Standing Calf Raise',target:'3 × 12–15',rest:60,sets:3,tempo:'2-3-1-0'},
@@ -437,7 +530,7 @@ const PHASE0_PROGRAM = [
     {name:'Cable Fly (Low-to-High)',target:'3 × 12–15',rest:60,sets:3,tempo:'3-2-1-1'},
     {name:'Overhead Tricep Extension (Cable)',target:'2 × 12–15',rest:60,sets:2,tempo:'3-2-1-0'},
     {name:'Incline DB Curl',target:'2 × 10–12',rest:60,sets:2,tempo:'3-2-1-1'},
-    {name:'Ab Wheel Rollout',target:'2 × 8–10',rest:60,sets:2,tempo:'3-0-2-0'},
+    {name:'Ab Wheel Rollout',target:'2 × 8–10',rest:60,sets:2,tempo:'3-1-2-0'},
   ]},
   {id:'rest0c',day:'SAT',name:'Active Recovery',focus:'Light walk · Mobility · Foam rolling',exercises:[]},
   {id:'rest0d',day:'SUN',name:'Full Rest',focus:'Sleep · Nutrition · CNS Recovery',exercises:[]},
@@ -478,7 +571,7 @@ const PHASE1_PROGRAM = [
     {name:'Barbell Hip Thrust',target:'3 × 10–12',rest:90,sets:3,tempo:'2-0-2-2'},
     {name:'Seated Leg Curl',target:'3 × 12–15',rest:60,sets:3,tempo:'3-2-1-0'},
     {name:'Cable Pull-Through',target:'3 × 15–20',rest:60,sets:3,tempo:'3-1-2-0'},
-    {name:'Ab Wheel Rollout',target:'3 × 10–12',rest:60,sets:3,tempo:'3-0-2-0'},
+    {name:'Ab Wheel Rollout',target:'3 × 10–12',rest:60,sets:3,tempo:'3-1-2-0'},
     {name:'Seated Calf Raise',target:'4 × 12–15',rest:60,sets:4,tempo:'2-3-1-0'},
   ]},
   {id:'rest1b',day:'SAT',name:'Active Recovery',focus:'Light walk · Mobility · Foam rolling',exercises:[]},
@@ -569,9 +662,9 @@ const PROGRAM=[
   {id:'post',day:'THU',name:'Lower — Posterior Chain',focus:'Hamstrings · Glutes · Erectors · Core',exercises:[
     {name:'Romanian Deadlift',target:'4 × 8–10',rest:120,sets:4,tempo:'3-2-2-0'},
     {name:'Barbell Hip Thrust',target:'4 × 10–12',rest:90,sets:4,tempo:'2-0-2-2'},
-    {name:'Nordic Hamstring Curl',target:'3 × 6–8',rest:90,sets:3,tempo:'4-0-X-0'},
+    {name:'Nordic Hamstring Curl',target:'3 × 6–8',rest:120,sets:3,tempo:'4-0-X-0'},
     {name:'Cable Pull-Through',target:'3 × 15–20',rest:60,sets:3,tempo:'3-1-2-0'},
-    {name:'Ab Wheel Rollout',target:'3 × 10–12',rest:60,sets:3,tempo:'3-0-2-0'},
+    {name:'Ab Wheel Rollout',target:'3 × 10–12',rest:60,sets:3,tempo:'3-1-2-0'},
     {name:'Hanging Leg Raise',target:'3 × 12–15',rest:60,sets:3,tempo:'2-1-2-0'},
     {name:'Pallof Press',target:'3 × 12–15 ea',rest:60,sets:3,tempo:'2-1-2-1'},
     {name:'Seated Calf Raise',target:'6 × 12–15',rest:60,sets:6,tempo:'2-3-1-0'},
@@ -770,11 +863,24 @@ function renderExercise(){
   }else{ssPanel.style.display='none';}
   let badges='';
   const pr=DB.prs[ex.name];if(pr)badges+=`<span class="badge pr">PR: ${pr.weight}lbs × ${pr.reps} // e1RM ${Math.round(pr.e1rm)}lbs</span>`;
-  const last=getLastSessionForExercise(ex.name);if(last)badges+=`<span class="badge suggest">LAST SESSION: ${last[0].weight}lbs</span>`;
+  const last=getLastSessionForExercise(ex.name);if(last)badges+=`<span class="badge suggest">LAST: ${last[0].weight}lbs</span>`;
   const rt=getRIRTrend(ex.name);
   if(rt.length>=2&&rt[0]>rt[1]+0.5&&rt[0]>=3)badges+=`<span class="badge rir-warn">⚠ RIR CREEPING UP — ADD WEIGHT</span>`;
   if(ex.supersetWith)badges+=`<span class="badge ss-badge">⚡ AAS SUPERSET</span>`;
   document.getElementById('ex-badges').innerHTML=badges;
+
+  // Warmup & RIR guidance panel
+  const guide=getExerciseGuide(ex.name);
+  const guideEl=document.getElementById('ex-guide-panel');
+  if(guide&&guideEl){
+    guideEl.style.display='block';
+    document.getElementById('guide-wu-sets').textContent=guide.wu===1?'1 warmup set':`${guide.wu} warmup sets`;
+    document.getElementById('guide-wu-note').textContent=guide.wuNote;
+    document.getElementById('guide-rir-target').textContent=`RIR ${guide.rir}`;
+    document.getElementById('guide-rir-note').textContent=guide.rirNote;
+  } else if(guideEl){
+    guideEl.style.display='none';
+  }
   renderSets();renderExNav();
 }
 
