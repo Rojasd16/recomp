@@ -1,8 +1,9 @@
-const CACHE = 'recomp-v1';
+const CACHE = 'recomp-v2';
+const BASE = '/recomp';
 const ASSETS = [
-  '/index.html',
-  '/manifest.json',
-  'https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap'
+  BASE + '/',
+  BASE + '/index.html',
+  BASE + '/manifest.json',
 ];
 
 self.addEventListener('install', e => {
@@ -23,6 +24,8 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   e.respondWith(
-    caches.match(e.request).then(cached => cached || fetch(e.request).catch(() => caches.match('/index.html')))
+    caches.match(e.request).then(cached =>
+      cached || fetch(e.request).catch(() => caches.match(BASE + '/index.html'))
+    )
   );
 });
